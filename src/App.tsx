@@ -20,6 +20,9 @@ function App() {
         <button onClick={() => sendBroadcast({body:"Opening tcm page", url:"https://dev-dfecomm.netlify.app/ShopGen02/dftcm"})}>
           Send notification to all subscribers open tcm page
         </button>
+        <button onClick={() => sendBroadcast({body:"Opening test cra page", url:"https://df-testing-cra.netlify.app/"})}>
+          Send notification to all subscribers open this page so can check is it will load installed pwa
+        </button>
       </header>
     </div>
   );
