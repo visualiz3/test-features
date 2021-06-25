@@ -20,9 +20,6 @@ const isLocalhost = Boolean(
     )
 );
 
-const publicVapidKey =
-  "BDxB08uFViF3YLCde8Rj__QifQ9jt8qrWsA1D_syqJE1wcgCt3yNnPPdg70aY8vCae0Sy9xdrtP9sXOTkqEOCiw";
-
 type Config = {
   onSuccess?: (registration: ServiceWorkerRegistration) => void;
   onUpdate?: (registration: ServiceWorkerRegistration) => void;
@@ -49,20 +46,6 @@ export function register(config?: Config) {
         // Add some additional logging to localhost, pointing developers to the
         // service worker/PWA documentation.
         navigator.serviceWorker.ready.then(async (register) => {
-          const subscription = await register.pushManager.subscribe({
-            userVisibleOnly: true,
-            applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
-          });
-          console.log(subscription)
-
-          //Send push notification
-          // await fetch("http://localhost:5000/subscribe", {
-          //   method: "POST",
-          //   body: JSON.stringify(subscription),
-          //   headers: {
-          //     "content-type": "application/json",
-          //   },
-          // });
           console.log(
             "This web app is being served cache-first by a service " +
               "worker. To learn more, visit https://cra.link/PWA"
@@ -160,19 +143,4 @@ export function unregister() {
         console.error(error.message);
       });
   }
-}
-
-function urlBase64ToUint8Array(base64String: any) {
-  const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
-  const base64 = (base64String + padding)
-    .replace(/\-/g, "+")
-    .replace(/_/g, "/");
-
-  const rawData = window.atob(base64);
-  const outputArray = new Uint8Array(rawData.length);
-
-  for (let i = 0; i < rawData.length; ++i) {
-    outputArray[i] = rawData.charCodeAt(i);
-  }
-  return outputArray;
 }
