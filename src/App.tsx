@@ -14,8 +14,11 @@ function App() {
         <button onClick={subscribeToWebPush}>
           Subscribe this client to webpush
         </button>
-        <button onClick={sendBroadcast}>
-          Send notification to all subscribers
+        <button onClick={() => sendBroadcast({})}>
+          Send notification to all subscribers open main page
+        </button>
+        <button onClick={() => sendBroadcast({body:"Opening tcm page", url:"https://dev-dfecomm.netlify.app/ShopGen02/dftcm"})}>
+          Send notification to all subscribers open tcm page
         </button>
       </header>
     </div>
@@ -38,12 +41,23 @@ let subscribeToWebPush = () => {
   });
 };
 
-let sendBroadcast = async () => {
+let sendBroadcast = async ({
+  title = "Broadcast to all",
+  body = "Opening main page",
+  url = "https://dev-dfecomm.netlify.app/",
+  action = "open_url",
+}) => {
   await fetch("https://dev.deepfuture.com.my/broadcast", {
     method: "POST",
     headers: {
       "content-type": "application/json",
     },
+    body: JSON.stringify({
+      title,
+      body,
+      url,
+      action,
+    }),
   });
 };
 

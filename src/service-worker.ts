@@ -1,4 +1,6 @@
 /// <reference lib="webworker" />
+
+//@ts-ignore
 /* eslint-disable no-restricted-globals */
 
 // This service worker can be customized!
@@ -82,14 +84,47 @@ self.addEventListener("message", (event) => {
 self.addEventListener("push", (e) => {
   console.log("push event");
   console.log(e);
-  const data = e!.data!.json();
+  const payload = e!.data!.json();
   self.registration.showNotification(
-    data.title, // title of the notification
+    payload.title, // title of the notification
     {
-      body: "Test notifcation.", //the body of the push notification
+      body: payload.body,
       image:
         "https://pixabay.com/vectors/bell-notification-communication-1096280/",
       icon: "https://pixabay.com/vectors/bell-notification-communication-1096280/", // icon
+      data: { url: payload.url, action: payload.action },
     }
   );
 });
+
+self.addEventListener(
+  "notificationclick",
+  function (event) {
+    event.notification.close(); // Android needs explicit close.
+    event.waitUntil(
+      //@ts-ignore
+      clients.matchAll({ type: "window" }).then((windowClients) => {
+        // Check if there is already a window/tab open with the target URL
+        for (var i = 0; i < windowClients.length; i++) {
+          var client = windowClients[i];
+          // If so, just focus it.
+          if (client.url === event.notification.data.url && "focus" in client) {
+            return client.focus();
+          }
+        }
+        // If not, then open the target URL in a new window/tab.
+        switch (event.notification.data.action) {
+          case "open_url":
+            //@ts-ignore
+            clients.openWindow(event.notification.data.url); //which we got from above
+            break;
+          case "others":
+            //@ts-ignore
+            clients.openWindow(event.notification.data.url);
+            break;
+        }
+      })
+    );
+  },
+  false
+);
