@@ -89,8 +89,10 @@ self.addEventListener("push", (e) => {
     payload.title, // title of the notification
     {
       body: payload.body,
-      icon: payload.icon,
-      image: payload.image,
+      // icon: payload.icon,
+      // image: payload.image,
+      icon: "https://df-ecommerce.s3.amazonaws.com/UcQdNA7Aa",
+      image: "https://df-ecommerce.s3.amazonaws.com/frTudmhyd",
       data: { url: payload.url, action: payload.action },
     }
   );
