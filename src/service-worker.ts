@@ -89,9 +89,8 @@ self.addEventListener("push", (e) => {
     payload.title, // title of the notification
     {
       body: payload.body,
-      image:
-        "https://pixabay.com/vectors/bell-notification-communication-1096280/",
-      icon: "https://pixabay.com/vectors/bell-notification-communication-1096280/", // icon
+      icon: payload.icon,
+      image: payload.image,
       data: { url: payload.url, action: payload.action },
     }
   );

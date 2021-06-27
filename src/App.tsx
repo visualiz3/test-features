@@ -6,8 +6,8 @@ const publicVapidKey =
   "BDxB08uFViF3YLCde8Rj__QifQ9jt8qrWsA1D_syqJE1wcgCt3yNnPPdg70aY8vCae0Sy9xdrtP9sXOTkqEOCiw";
 
 function App() {
-  const [icon, setIcon] = useState("fruit.svg");
-  const [image, setImage] = useState("car.svg");
+  const [icon, setIcon] = useState("https://df-ecommerce.s3.amazonaws.com/UcQdNA7Aa");
+  const [image, setImage] = useState("https://df-ecommerce.s3.amazonaws.com/frTudmhyd");
 
   return (
     <div className="App">
@@ -33,19 +33,21 @@ function App() {
 
         <p />
 
-        <button onClick={() => sendBroadcast({})}>
-          Send notification to all subscribers open main page
+        <button onClick={() => sendBroadcast({ icon, image })}>
+          Send notification to open main page
         </button>
-        <button onClick={() => sendBroadcast({ body: "Opening tcm page", url: "https://dev-dfecomm.netlify.app/ShopGen02/dftcm" })}>
-          Send notification to all subscribers open tcm page
-        </button>
-        <button onClick={() => sendBroadcast({ body: "Opening test cra page", url: "https://df-testing-cra.netlify.app/" })}>
-          Send notification to all subscribers open this page so can check is it will load installed pwa
+        <button onClick={() => sendBroadcast({ 
+          title: "中风--每10分钟1大马男人中招!",
+          body: "中风是大马人的第三大杀手，它也是引发严重残疾的单一主要病因。", 
+          icon: "https://df-ecommerce.s3.amazonaws.com/UcQdNA7Aa",
+          image: "https://df-ecommerce.s3.amazonaws.com/ENhjjoUVH",
+          url: "https://dev-dfecomm.netlify.app/ShopGen02/dftcm/blog/60d01f7676500a366fedc2e0" 
+        })}>
+          Send notification of tcm blog
         </button>
 
         <p />
 
-        <img src="logo192.png" />
         <button onClick={() => showNotification({
           body: "This is body",
           icon: icon,
@@ -104,9 +106,11 @@ let subscribeToWebPush = () => {
 };
 
 let sendBroadcast = async ({
-  title = "Broadcast to all",
-  body = "Opening main page",
-  url = "https://dev-dfecomm.netlify.app/",
+  title = "This is the title",
+  body = "This is the body",
+  icon = "https://df-ecommerce.s3.amazonaws.com/UcQdNA7Aa",
+  image = "https://df-ecommerce.s3.amazonaws.com/frTudmhyd",
+  url = "https://df-testing-cra.netlify.app/",
   action = "open_url",
 }) => {
   await fetch("https://dev.deepfuture.com.my/broadcast", {
@@ -117,6 +121,8 @@ let sendBroadcast = async ({
     body: JSON.stringify({
       title,
       body,
+      icon,
+      image,
       url,
       action,
     }),
