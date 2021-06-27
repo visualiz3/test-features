@@ -91,7 +91,7 @@ self.addEventListener("push", (e) => {
       body: payload.body,
       // icon: payload.icon,
       // image: payload.image,
-      badge: "https://df-ecommerce.s3.amazonaws.com/UcQdNA7Aa", 
+      badge: "fruit128.png",
       icon: "https://df-ecommerce.s3.amazonaws.com/UcQdNA7Aa",
       image: "https://df-ecommerce.s3.amazonaws.com/frTudmhyd",
       data: { url: payload.url, action: payload.action },
