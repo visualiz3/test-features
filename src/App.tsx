@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 
@@ -6,14 +6,33 @@ const publicVapidKey =
   "BDxB08uFViF3YLCde8Rj__QifQ9jt8qrWsA1D_syqJE1wcgCt3yNnPPdg70aY8vCae0Sy9xdrtP9sXOTkqEOCiw";
 
 function App() {
+  const [icon, setIcon] = useState("fruit.svg");
+  const [image, setImage] = useState("car.svg");
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
+
+        <p>
+          <span>icon</span>
+          <input value={icon} onChange={e => setIcon(e.target.value)} />
+        </p>
+
+        <p>
+          <span>image</span>
+          <input value={image} onChange={e => setImage(e.target.value)} />
+        </p>
+
+        <p />
+
         <button onClick={notifyMe}>Ask for permission</button>
         <button onClick={subscribeToWebPush}>
           Subscribe this client to webpush
         </button>
+
+        <p />
+
         <button onClick={() => sendBroadcast({})}>
           Send notification to all subscribers open main page
         </button>
@@ -23,13 +42,18 @@ function App() {
         <button onClick={() => sendBroadcast({ body: "Opening test cra page", url: "https://df-testing-cra.netlify.app/" })}>
           Send notification to all subscribers open this page so can check is it will load installed pwa
         </button>
+
+        <p />
+
+        <img src="logo192.png" />
         <button onClick={() => showNotification({
           body: "This is body",
-          icon: "https://pixabay.com/vectors/bell-peppers-vegetables-food-319381/",
-          image: "https://pixabay.com/vectors/bells-christmas-salvation-gold-152412/"
+          icon: icon,
+          image: image
         })}>
           Show local notification
         </button>
+
       </header>
     </div>
   );
@@ -68,6 +92,7 @@ let subscribeToWebPush = () => {
       userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
     });
+    console.log("subscription:", subscription);
     await fetch("https://dev.deepfuture.com.my/subscribe", {
       method: "POST",
       body: JSON.stringify(subscription),
@@ -99,6 +124,7 @@ let sendBroadcast = async ({
 };
 
 let showNotification = (options: NotificationOptions) => {
+  console.log(options);
   navigator.serviceWorker.getRegistration().then(reg => {
     reg?.showNotification("This is title", options);
   })
