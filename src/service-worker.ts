@@ -82,9 +82,9 @@ self.addEventListener("message", (event) => {
 
 // Any other custom service worker logic can go here.
 self.addEventListener("push", (e) => {
-  console.log("push event");
-  console.log(e);
+  console.log("push event:", e);
   const payload = e!.data!.json();
+  console.log("payload:", payload);
   self.registration.showNotification(
     payload.title, // title of the notification
     {
@@ -103,6 +103,8 @@ self.addEventListener(
     event.waitUntil(
       //@ts-ignore
       clients.matchAll({ type: "window" }).then((windowClients) => {
+        console.log("noticiation click:", event.notification);
+        console.log("data:", event.notification.data);
         // Check if there is already a window/tab open with the target URL
         for (var i = 0; i < windowClients.length; i++) {
           var client = windowClients[i];
