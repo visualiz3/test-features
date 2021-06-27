@@ -17,16 +17,50 @@ function App() {
         <button onClick={() => sendBroadcast({})}>
           Send notification to all subscribers open main page
         </button>
-        <button onClick={() => sendBroadcast({body:"Opening tcm page", url:"https://dev-dfecomm.netlify.app/ShopGen02/dftcm"})}>
+        <button onClick={() => sendBroadcast({ body: "Opening tcm page", url: "https://dev-dfecomm.netlify.app/ShopGen02/dftcm" })}>
           Send notification to all subscribers open tcm page
         </button>
-        <button onClick={() => sendBroadcast({body:"Opening test cra page", url:"https://df-testing-cra.netlify.app/"})}>
+        <button onClick={() => sendBroadcast({ body: "Opening test cra page", url: "https://df-testing-cra.netlify.app/" })}>
           Send notification to all subscribers open this page so can check is it will load installed pwa
+        </button>
+        <button onClick={() => showNotification({
+          body: "This is body",
+          icon: "https://pixabay.com/vectors/bell-peppers-vegetables-food-319381/",
+          image: "https://pixabay.com/vectors/bells-christmas-salvation-gold-152412/"
+        })}>
+          Show local notification
         </button>
       </header>
     </div>
   );
 }
+
+let notifyMe = () => {
+  // Let's check if the browser supports notifications
+  if (!("Notification" in window)) {
+    return alert("This browser does not support desktop notification");
+  }
+
+  // Otherwise, we need to ask the user for permission
+  if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(function (permission) {
+      if (permission === "granted") {
+        let notification = new Notification("Thanks for giving permission!");
+        notification.addEventListener("click", () => {
+          console.log("Hi there click listener");
+        });
+      }
+    });
+  }
+
+  console.log(Notification.permission);
+  if (Notification.permission === "denied") {
+    // Cant request again.. already blocked
+    Notification.requestPermission();
+    // Alternative is to ask user enable
+    alert("Please enable your notification");
+  }
+};
 
 let subscribeToWebPush = () => {
   navigator.serviceWorker.ready.then(async (register) => {
@@ -64,32 +98,11 @@ let sendBroadcast = async ({
   });
 };
 
-let notifyMe = () => {
-  // Let's check if the browser supports notifications
-  if (!("Notification" in window)) {
-    return alert("This browser does not support desktop notification");
-  }
-
-  // Otherwise, we need to ask the user for permission
-  if (Notification.permission !== "denied") {
-    Notification.requestPermission().then(function (permission) {
-      if (permission === "granted") {
-        let notification = new Notification("Thanks for giving permission!");
-        notification.addEventListener("click", () => {
-          console.log("Hi there click listener");
-        });
-      }
-    });
-  }
-
-  console.log(Notification.permission);
-  if (Notification.permission === "denied") {
-    // Cant request again.. already blocked
-    Notification.requestPermission();
-    // Alternative is to ask user enable
-    alert("Please enable your notification");
-  }
-};
+let showNotification = (options: NotificationOptions) => {
+  navigator.serviceWorker.getRegistration().then(reg => {
+    reg?.showNotification("This is title", options);
+  })
+}
 
 function urlBase64ToUint8Array(base64String: any) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
