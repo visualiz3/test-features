@@ -12,7 +12,7 @@ function App() {
   const [image, setImage] = useState(
     "https://df-ecommerce.s3.amazonaws.com/frTudmhyd"
   );
-  
+
   let subscribeToWebPush = () => {
     navigator.serviceWorker.ready.then(async (register) => {
       const subscription = await register.pushManager.subscribe({
@@ -50,7 +50,9 @@ function App() {
         </button>
         <button onClick={clearSubscriptions}>Clear subscriptions</button>
         <p />
-        <button onClick={() => sendBroadcast({ icon, image })}>
+        <button
+          onClick={() => sendBroadcast({ icon, image, badge: "car128.png" })}
+        >
           Send notification to open main page
         </button>
         <button
@@ -58,6 +60,7 @@ function App() {
             sendBroadcast({
               title: "中风--每10分钟1大马男人中招!",
               body: "中风是大马人的第三大杀手，它也是引发严重残疾的单一主要病因。",
+              badge: "fruit128.png",
               icon: "https://df-ecommerce.s3.amazonaws.com/UcQdNA7Aa",
               image: "https://df-ecommerce.s3.amazonaws.com/ENhjjoUVH",
               url: "https://dev-dfecomm.netlify.app/ShopGen02/dftcm/blog/60d01f7676500a366fedc2e0",
@@ -125,6 +128,7 @@ let sendBroadcast = async ({
   body = "This is the body",
   icon = "https://df-ecommerce.s3.amazonaws.com/UcQdNA7Aa",
   image = "https://df-ecommerce.s3.amazonaws.com/frTudmhyd",
+  badge = "logo192.png",
   url = "https://df-testing-cra.netlify.app/",
   ttl = 180, // seconds -how long a push message is retained by the push service, default is four weeks
   action = "open_url",
@@ -138,6 +142,7 @@ let sendBroadcast = async ({
       title,
       body,
       icon,
+      badge,
       image,
       ttl,
       url,
