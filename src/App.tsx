@@ -6,58 +6,79 @@ const publicVapidKey =
   "BDxB08uFViF3YLCde8Rj__QifQ9jt8qrWsA1D_syqJE1wcgCt3yNnPPdg70aY8vCae0Sy9xdrtP9sXOTkqEOCiw";
 
 function App() {
-  const [icon, setIcon] = useState("https://df-ecommerce.s3.amazonaws.com/UcQdNA7Aa");
-  const [image, setImage] = useState("https://df-ecommerce.s3.amazonaws.com/frTudmhyd");
+  const [icon, setIcon] = useState(
+    "https://df-ecommerce.s3.amazonaws.com/UcQdNA7Aa"
+  );
+  const [image, setImage] = useState(
+    "https://df-ecommerce.s3.amazonaws.com/frTudmhyd"
+  );
+  
+  let subscribeToWebPush = () => {
+    navigator.serviceWorker.ready.then(async (register) => {
+      const subscription = await register.pushManager.subscribe({
+        userVisibleOnly: true,
+        applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
+      });
+      console.log("subscription:", subscription);
+      await fetch("https://dev.deepfuture.com.my/subscribe", {
+        method: "POST",
+        body: JSON.stringify(subscription),
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+    });
+  };
 
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        version 6
-
+        <p></p>
+        version 7
         <p>
           <span>icon</span>
-          <input value={icon} onChange={e => setIcon(e.target.value)} />
+          <input value={icon} onChange={(e) => setIcon(e.target.value)} />
         </p>
-
         <p>
           <span>image</span>
-          <input value={image} onChange={e => setImage(e.target.value)} />
+          <input value={image} onChange={(e) => setImage(e.target.value)} />
         </p>
-
         <p />
-
         <button onClick={notifyMe}>Ask for permission</button>
         <button onClick={subscribeToWebPush}>
-          Subscribe this client to webpush
+          Subscribe this client to webpush ( no duplicates )
         </button>
-
+        <button onClick={clearSubscriptions}>Clear subscriptions</button>
         <p />
-
         <button onClick={() => sendBroadcast({ icon, image })}>
           Send notification to open main page
         </button>
-        <button onClick={() => sendBroadcast({ 
-          title: "中风--每10分钟1大马男人中招!",
-          body: "中风是大马人的第三大杀手，它也是引发严重残疾的单一主要病因。", 
-          icon: "https://df-ecommerce.s3.amazonaws.com/UcQdNA7Aa",
-          image: "https://df-ecommerce.s3.amazonaws.com/ENhjjoUVH",
-          url: "https://dev-dfecomm.netlify.app/ShopGen02/dftcm/blog/60d01f7676500a366fedc2e0" 
-        })}>
+        <button
+          onClick={() =>
+            sendBroadcast({
+              title: "中风--每10分钟1大马男人中招!",
+              body: "中风是大马人的第三大杀手，它也是引发严重残疾的单一主要病因。",
+              icon: "https://df-ecommerce.s3.amazonaws.com/UcQdNA7Aa",
+              image: "https://df-ecommerce.s3.amazonaws.com/ENhjjoUVH",
+              url: "https://dev-dfecomm.netlify.app/ShopGen02/dftcm/blog/60d01f7676500a366fedc2e0",
+            })
+          }
+        >
           Send notification of tcm blog
         </button>
-
         <p />
-
-        <button onClick={() => showNotification({
-          body: "This is body",
-          badge: icon,
-          icon: icon,
-          image: image
-        })}>
+        <button
+          onClick={() =>
+            showNotification({
+              body: "This is body",
+              badge: icon,
+              icon: icon,
+              image: image,
+            })
+          }
+        >
           Show local notification
         </button>
-
       </header>
     </div>
   );
@@ -90,20 +111,12 @@ let notifyMe = () => {
   }
 };
 
-let subscribeToWebPush = () => {
-  navigator.serviceWorker.ready.then(async (register) => {
-    const subscription = await register.pushManager.subscribe({
-      userVisibleOnly: true,
-      applicationServerKey: urlBase64ToUint8Array(publicVapidKey),
-    });
-    console.log("subscription:", subscription);
-    await fetch("https://dev.deepfuture.com.my/subscribe", {
-      method: "POST",
-      body: JSON.stringify(subscription),
-      headers: {
-        "content-type": "application/json",
-      },
-    });
+let clearSubscriptions = () => {
+  fetch("https://dev.deepfuture.com.my/clearSubscribers", {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
   });
 };
 
@@ -113,6 +126,7 @@ let sendBroadcast = async ({
   icon = "https://df-ecommerce.s3.amazonaws.com/UcQdNA7Aa",
   image = "https://df-ecommerce.s3.amazonaws.com/frTudmhyd",
   url = "https://df-testing-cra.netlify.app/",
+  ttl = 180, // seconds -how long a push message is retained by the push service, default is four weeks
   action = "open_url",
 }) => {
   await fetch("https://dev.deepfuture.com.my/broadcast", {
@@ -125,6 +139,7 @@ let sendBroadcast = async ({
       body,
       icon,
       image,
+      ttl,
       url,
       action,
     }),
@@ -133,10 +148,10 @@ let sendBroadcast = async ({
 
 let showNotification = (options: NotificationOptions) => {
   console.log(options);
-  navigator.serviceWorker.getRegistration().then(reg => {
+  navigator.serviceWorker.getRegistration().then((reg) => {
     reg?.showNotification("This is title", options);
-  })
-}
+  });
+};
 
 function urlBase64ToUint8Array(base64String: any) {
   const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
