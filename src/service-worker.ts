@@ -81,23 +81,23 @@ self.addEventListener("message", (event) => {
 });
 
 // Any other custom service worker logic can go here.
-self.addEventListener("push", (e) => {
-  console.log("push event:", e);
-  const payload = e!.data!.json();
-  console.log("payload:", payload);
-  self.registration.showNotification(
-    payload.title, // title of the notification
-    {
-      body: payload.body,
-      // icon: payload.icon,
-      // image: payload.image,
-      badge: payload.badge,
-      icon: payload.icon,
-      image: payload.image,
-      data: { url: payload.url, action: payload.action },
-    }
-  );
-});
+// self.addEventListener("push", (e) => {
+//   console.log("push event:", e);
+//   const payload = e!.data!.json();
+//   console.log("payload:", payload);
+//   self.registration.showNotification(
+//     payload.title, // title of the notification
+//     {
+//       body: payload.body,
+//       // icon: payload.icon,
+//       // image: payload.image,
+//       badge: payload.badge,
+//       icon: payload.icon,
+//       image: payload.image,
+//       data: { url: payload.url, action: payload.action },
+//     }
+//   );
+// });
 
 self.addEventListener(
   "notificationclick",

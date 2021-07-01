@@ -30,6 +30,28 @@ function App() {
     });
   };
 
+  let addPush = () => {
+    navigator.serviceWorker.addEventListener("push", (e) => {
+      console.log("push event:", e);
+      const payload = e!.data!.json();
+      console.log("payload:", payload);
+      navigator.serviceWorker.getRegistration().then(reg => {
+        reg?.showNotification(
+          payload.title, // title of the notification
+          {
+            body: payload.body,
+            // icon: payload.icon,
+            // image: payload.image,
+            badge: payload.badge,
+            icon: payload.icon,
+            image: payload.image,
+            data: { url: payload.url, action: payload.action },
+          }
+        );
+      })
+    })
+  }
+
   return (
     <div className="App">
       <header className="App-header">
@@ -43,6 +65,8 @@ function App() {
           <span>image</span>
           <input value={image} onChange={(e) => setImage(e.target.value)} />
         </p>
+        <p />
+        <button onClick={addPush}>Add event listener push</button>
         <p />
         <button onClick={notifyMe}>Ask for permission</button>
         <button onClick={subscribeToWebPush}>
