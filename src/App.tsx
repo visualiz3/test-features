@@ -31,11 +31,11 @@ function App() {
   };
 
   let addPush = () => {
-    navigator.serviceWorker.addEventListener("push", (e) => {
+    navigator.serviceWorker.addEventListener("push", (e: any) => {
       console.log("push event:", e);
       const payload = e!.data!.json();
       console.log("payload:", payload);
-      navigator.serviceWorker.getRegistration().then(reg => {
+      navigator.serviceWorker.getRegistration().then((reg) => {
         reg?.showNotification(
           payload.title, // title of the notification
           {
@@ -48,9 +48,9 @@ function App() {
             data: { url: payload.url, action: payload.action },
           }
         );
-      })
-    })
-  }
+      });
+    });
+  };
 
   return (
     <div className="App">
